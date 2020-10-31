@@ -69,6 +69,11 @@ public class Task implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Task [id=" + id + ", user=" + user + ", description=" + description + ", completed=" + completed + "]";
+	}
+
 	public int getId() {
 		return id;
 	}

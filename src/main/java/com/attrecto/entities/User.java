@@ -61,6 +61,11 @@ public class User implements Serializable{
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", active=" + active + "]";
+	}
+
 	public int getId() {
 		return id;
 	}

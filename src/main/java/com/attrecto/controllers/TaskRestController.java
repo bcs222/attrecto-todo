@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.attrecto.controllers.exceptions.TaskNotFoundException;
 import com.attrecto.controllers.exceptions.UserNotFoundException;
 import com.attrecto.entities.Task;
 import com.attrecto.entities.User;
@@ -26,24 +25,20 @@ public class TaskRestController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private TaskService taskService;
+	
 	private EntityModel<Task> createTaskEntityModel(Task task){
 		int userId = task.getUser().getId();
+		int taskId = task.getId();
 		
-		EntityModel<Task> taskEntity = methodOn(TaskRestController.class).getTask(task.getId());
-		EntityModel<User> userEntity = methodOn(UserRestController.class).getUser(userId);
-		CollectionModel<EntityModel<Task>> taskList = methodOn(TaskRestController.class).getTaskList(userId);
-		CollectionModel<EntityModel<User>> userList = methodOn(UserRestController.class).getUserList();
-		
-		Link taskLink = linkTo(taskEntity).withSelfRel();
-		Link userLink = linkTo(userEntity).withRel("user");
-		Link taskListLink = linkTo(taskList).withRel("taskList");
-		Link userListLink = linkTo(userList).withRel("userList");
+		Link taskLink = linkTo(methodOn(TaskRestController.class).getTask(taskId)).withSelfRel();
+		Link userLink = linkTo(methodOn(UserRestController.class).getUser(userId)).withRel("user");
+		Link taskListLink = linkTo(methodOn(TaskRestController.class).getTaskList(userId)).withRel("taskList");
+		Link userListLink = linkTo(methodOn(UserRestController.class).getUserList()).withRel("userList");
 		
 		return EntityModel.of(task, taskLink, userLink, taskListLink, userListLink);
 	}
-	
-	@Autowired
-	private TaskService taskService;
 
 	@GetMapping("/users/{userId}/tasks")
 	public CollectionModel<EntityModel<Task>> getTaskList(@PathVariable int userId){
@@ -65,12 +60,6 @@ public class TaskRestController {
 	
 	@GetMapping("/tasks/{taskId}")
 	public EntityModel<Task> getTask(@PathVariable int taskId){
-		Task task = taskService.findTaskById(taskId);
-		
-		if(task == null) {
-			throw new TaskNotFoundException();
-		}
-		
-		return createTaskEntityModel(task);
+		return createTaskEntityModel(taskService.findTaskById(taskId));
 	}
 }

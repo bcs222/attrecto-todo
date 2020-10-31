@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.attrecto.entities.Task;
 import com.attrecto.entities.User;
 import com.attrecto.services.UserService;
 
@@ -33,14 +32,9 @@ public class UserRestController {
 	private UserService userService;
 
 	private EntityModel<User> createUserEntityModel(User user) {
-		
-		EntityModel<User> userEntityModel = methodOn(UserRestController.class).getUser(user.getId());		
-		CollectionModel<EntityModel<User>> userList =  methodOn(UserRestController.class).getUserList();		
-		CollectionModel<EntityModel<Task>> taskList = methodOn(TaskRestController.class).getTaskList(user.getId());
-		
-		Link selfLink = linkTo(userEntityModel).withSelfRel();
-		Link userListLink = linkTo(userList).withRel("allUsers");
-		Link userTaskListLink = linkTo(taskList).withRel("taskList");
+		Link selfLink = linkTo(methodOn(UserRestController.class).getUser(user.getId())).withSelfRel();
+		Link userListLink = linkTo(methodOn(UserRestController.class).getUserList()).withRel("allUsers");
+		Link userTaskListLink = linkTo(methodOn(TaskRestController.class).getTaskList(user.getId())).withRel("taskList");
 		
 		return EntityModel.of(user, selfLink, userTaskListLink, userListLink);
 	}
