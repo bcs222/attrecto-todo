@@ -12,6 +12,8 @@ create table roles (
 create table users (
 	user_id int auto_increment primary key,
 	name varchar(20) not null,
+	email varchar(127) not null,
+	password varchar(512) not null,
 	active boolean not null
 );
 
@@ -36,19 +38,21 @@ create table tasks (
 );
 
 insert into roles (name, admin_role) values
-('ADMIN', true),
-('EMP', false);
+('ROLE_ADMIN', true),
+('ROLE_MODERATOR', false),
+('ROLE_USER', false);
 
-insert into users (name, active) values
-('Anne', true), 
-('Bob', true), 
-('Cecil', true);
+insert into users (name, password, email, active) values
+('Anne', '$2y$12$FJo1hmxYR0vDPXEREVF4p.ss.JF6CTHa/tF0slZFhPrw4v1Od4V.u', 'anne@abc.aaa', true), 
+('Bob', '$2y$12$b87sQKac4RfEED/MR.iMMeN2jXOmu1QWDBXYWyd/8UZ8xy2Lki4te','bob@abc.aaa', true), 
+('Cecil', '$2y$12$VMSKNdBLrBxf1gusCMnVP.3ZcDLdx4gxGYuGZ/hLzENjDQdsQ23.G', 'cecil@abc.aaa', true);
 
 insert into users_roles (user_id, role_id) values
 (1, 1),
 (1, 2),
-(2, 2),
-(3, 2);
+(1, 3),
+(2, 3),
+(3, 3);
 
 insert into tasks (user_id, description, completed) values
 (1, 'task #1 that belongs to Anne', true),

@@ -23,21 +23,41 @@ public class UserService {
 	}
 	
 	public User getUserByName(String userName) {
-		return userRepo.findByName(userName.trim());
+		try {
+			return userRepo.findByName(userName.trim());
+		} catch (Exception e) {
+			throw new UserNotFoundException(userName);
+		}
+	}
+	
+	public boolean existsByUsername(String userName) {
+		try {
+			return userRepo.findByName(userName.trim()) != null;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public boolean existsByEmail(String userEmail) {
+		try {
+			return userRepo.findByEmail(userEmail.trim()) != null;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public List<User> getAllUsers(){
 		return userRepo.findAll();
 	}
 	
-	public User saveUser(User user) {
+	public User save(User user) {
 		return userRepo.save(user);
 	}
 	
-	public User deleteUser(int id) {
+	public User delete(int id) {
 		User user = getUserById(id);
 		taskRepo.deleteAll(taskRepo.findByUser(user));
 		user.setActive(false);
-		return saveUser(user);
+		return save(user);
 	}
 }

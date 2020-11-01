@@ -15,8 +15,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +36,12 @@ public class User implements Serializable{
     @Size(min = 3, max = 20, message = "{error.user.name.size}")
 	@Column(unique = true)
 	private String name;
+	
+	@Email(message = "Invalid e-mail address...")
+	private String email;
+	
+	@JsonIgnore
+	private String password;
 	
 	private boolean active;
 	
@@ -69,6 +78,19 @@ public class User implements Serializable{
 	public User(String name) {
 		this();
 		this.name = name;
+	}
+	
+	public User(
+			@NotBlank(message = "{error.user.name.blank}") 
+			@Size(min = 3, max = 20, message = "{error.user.name.size}") 
+			String name,
+			
+			@Email(message = "Invalid e-mail address...") 
+			String email, String password) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
 	}
 
 	@Override
@@ -128,6 +150,26 @@ public class User implements Serializable{
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setAdminRoleGranted(boolean adminRoleGranted) {
+		this.adminRoleGranted = adminRoleGranted;
 	}
 	
 }

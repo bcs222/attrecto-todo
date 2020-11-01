@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.attrecto.entities.User;
+import com.attrecto.security.UserDetailsImpl;
 import com.attrecto.services.UserService;
 
 @RestController
@@ -38,6 +41,28 @@ public class UserRestController {
 		Link userTaskListLink = linkTo(methodOn(TaskRestController.class).getTaskList(user.getId())).withRel("taskList");
 		
 		return EntityModel.of(user, selfLink, userTaskListLink, userListLink);
+	}
+	
+	private boolean accessAllowed(Authentication authentication, HttpRequest request) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		Integer id = userDetails.getId(); 
+		boolean isAdmin = userDetails.getAuthorities().stream()
+		.map(a -> a.getAuthority())
+		.collect(Collectors.toSet()).contains("ROLE_ADMIN");
+		
+		if(isAdmin) {
+			return true;
+		}
+		
+		if(request.getURI().toString().contains("/users/" + id + "/")) {
+			return true;
+		}
+		
+		if(request.getURI().toString().endsWith("/users/" + id)) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	@GetMapping
@@ -59,16 +84,16 @@ public class UserRestController {
 	
 	@PostMapping
 	public EntityModel<User> addUser(@RequestBody @Valid User user){
-		return createUserEntityModel(userService.saveUser(user));
+		return createUserEntityModel(userService.save(user));
 	}
 	
 	@PutMapping
 	public EntityModel<User> updateUser(@RequestBody @Valid User user){
-		return createUserEntityModel(userService.saveUser(user));
+		return createUserEntityModel(userService.save(user));
 	}
 	
 	@DeleteMapping("/{userId}")
 	public EntityModel<User> deleteUser(@PathVariable int userId) {
-		return createUserEntityModel(userService.deleteUser(userId));
+		return createUserEntityModel(userService.delete(userId));
 	}
 }
