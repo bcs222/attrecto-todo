@@ -1,6 +1,7 @@
 package com.attrecto.entities;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,9 +40,11 @@ public class Task implements Serializable {
 	
 	private boolean completed;
 	
+	private LocalDate deadline;
+	
 	public Task() {}
 
-	public Task(User user, String description) {
+	public Task(User user, String description, LocalDate deadline) {
 		super();
 		this.user = user;
 		this.description = description;
@@ -71,7 +74,8 @@ public class Task implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Task [id=" + id + ", user=" + user + ", description=" + description + ", completed=" + completed + "]";
+		return "Task [id=" + id + ", user=" + user + ", description=" + description + ", completed=" + completed
+				+ ", deadline=" + deadline + "]";
 	}
 
 	public int getId() {
@@ -104,6 +108,14 @@ public class Task implements Serializable {
 
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
+	}
+
+	public LocalDate getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(LocalDate deadline) {
+		this.deadline = deadline;
 	}
 	
 }

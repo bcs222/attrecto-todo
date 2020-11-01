@@ -22,6 +22,10 @@ public class UserService {
 		return userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 	}
 	
+	public User getUserByName(String userName) {
+		return userRepo.findByName(userName.trim());
+	}
+	
 	public List<User> getAllUsers(){
 		return userRepo.findAll();
 	}

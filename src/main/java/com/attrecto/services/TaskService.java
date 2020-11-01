@@ -29,10 +29,6 @@ public class TaskService {
 		return taskRepo.save(task);
 	}
 	
-	public void deleteTask(Task task) {
-		taskRepo.delete(task);
-	}
-	
 	public void deleteTask(int id) {
 		taskRepo.deleteById(id);
 	}

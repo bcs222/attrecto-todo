@@ -6,12 +6,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.attrecto.controllers.exceptions.UserNotFoundException;
@@ -61,5 +67,22 @@ public class TaskRestController {
 	@GetMapping("/tasks/{taskId}")
 	public EntityModel<Task> getTask(@PathVariable int taskId){
 		return createTaskEntityModel(taskService.findTaskById(taskId));
+	}
+	
+	@PostMapping
+	public EntityModel<Task> addTask(@RequestBody @Valid Task task){
+		return createTaskEntityModel(taskService.saveTask(task));
+	}
+	
+	@PutMapping
+	public EntityModel<Task> updateTask(@RequestBody @Valid Task task){
+		return createTaskEntityModel(taskService.saveTask(task));
+	}
+	
+	@DeleteMapping
+	public String deleteTask(int taskId){
+		taskService.deleteTask(taskId);
+		
+		return "Task (" + taskId + ") deleted...";
 	}
 }

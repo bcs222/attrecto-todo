@@ -1,13 +1,20 @@
 package com.attrecto.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -29,6 +36,31 @@ public class User implements Serializable{
 	
 	private boolean active;
 	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "users_roles",
+			joinColumns = @JoinColumn(name = "user_id"), 
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles;
+	
+	@Transient
+	private boolean adminRoleGranted;
+	
+	@PostLoad
+	private void init() {
+		Role testAdminRole = new Role();
+		testAdminRole.setId(1);;
+		if(roles.contains(testAdminRole)) {
+			adminRoleGranted = true;
+		} else {
+			adminRoleGranted = false;
+		}
+	}
+	
+	public boolean isAdminRoleGranted() {
+		return adminRoleGranted;
+	}
+
 	public User() {
 		super();
 		this.active = true;
@@ -88,6 +120,14 @@ public class User implements Serializable{
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 	
 }
