@@ -40,6 +40,7 @@ public class Task implements Serializable {
 	
 	private boolean completed;
 	
+	@NotNull(message = "{error.task.deadline.null}")
 	private LocalDate deadline;
 	
 	public Task() {}

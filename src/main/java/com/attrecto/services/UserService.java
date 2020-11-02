@@ -23,16 +23,12 @@ public class UserService {
 	}
 	
 	public User getUserByName(String userName) {
-		try {
-			return userRepo.findByName(userName.trim());
-		} catch (Exception e) {
-			throw new UserNotFoundException(userName);
-		}
+		return userRepo.findByName(userName.trim()).orElseThrow(() -> new UserNotFoundException(userName));
 	}
 	
 	public boolean existsByUsername(String userName) {
 		try {
-			return userRepo.findByName(userName.trim()) != null;
+			return userRepo.findByName(userName.trim()).orElse(null) != null;
 		} catch (Exception e) {
 			return false;
 		}
@@ -40,7 +36,7 @@ public class UserService {
 	
 	public boolean existsByEmail(String userEmail) {
 		try {
-			return userRepo.findByEmail(userEmail.trim()) != null;
+			return userRepo.findByEmail(userEmail.trim()).orElse(null) != null;
 		} catch (Exception e) {
 			return false;
 		}

@@ -38,12 +38,23 @@ public class TaskRestController {
 		int userId = task.getUser().getId();
 		int taskId = task.getId();
 		
-		Link taskLink = linkTo(methodOn(TaskRestController.class).getTask(taskId)).withSelfRel();
-		Link userLink = linkTo(methodOn(UserRestController.class).getUser(userId)).withRel("user");
+		Link taskLink = linkTo(methodOn(TaskRestController.class).getTask(userId, taskId)).withSelfRel();
+		Link addTaskLink = linkTo(methodOn(TaskRestController.class).addTask(task)).withRel("add");
+		Link updateTaskLink = linkTo(methodOn(TaskRestController.class).updateTask(task)).withRel("update");
+		Link deleteTaskLink = linkTo(methodOn(TaskRestController.class).deleteTask(userId, taskId)).withRel("delete");
 		Link taskListLink = linkTo(methodOn(TaskRestController.class).getTaskList(userId)).withRel("taskList");
+		Link userLink = linkTo(methodOn(UserRestController.class).getUser(userId)).withRel("user");
 		Link userListLink = linkTo(methodOn(UserRestController.class).getUserList()).withRel("userList");
 		
-		return EntityModel.of(task, taskLink, userLink, taskListLink, userListLink);
+		return EntityModel.of(
+				task, taskLink, addTaskLink, updateTaskLink,  deleteTaskLink, userLink, taskListLink, userListLink);
+	}
+
+	@GetMapping("/users/{userId}/tasks/{taskId}")
+	public EntityModel<Task> getTask(@PathVariable int userId, @PathVariable int taskId) {
+		Task task = taskService.findTaskById(taskId);
+		
+		return createTaskEntityModel(task);
 	}
 
 	@GetMapping("/users/{userId}/tasks")
@@ -64,25 +75,18 @@ public class TaskRestController {
 		
 	}
 	
-	@GetMapping("/tasks/{taskId}")
-	public EntityModel<Task> getTask(@PathVariable int taskId){
-		return createTaskEntityModel(taskService.findTaskById(taskId));
-	}
-	
-	@PostMapping
+	@PostMapping("/users/{userId}/tasks")
 	public EntityModel<Task> addTask(@RequestBody @Valid Task task){
 		return createTaskEntityModel(taskService.saveTask(task));
 	}
 	
-	@PutMapping
+	@PutMapping("/users/{userId}/tasks")
 	public EntityModel<Task> updateTask(@RequestBody @Valid Task task){
 		return createTaskEntityModel(taskService.saveTask(task));
 	}
 	
-	@DeleteMapping
-	public String deleteTask(int taskId){
-		taskService.deleteTask(taskId);
-		
-		return "Task (" + taskId + ") deleted...";
+	@DeleteMapping("/users/{userId}/tasks/{taskId}")
+	public EntityModel<Task> deleteTask(@PathVariable int userId, @PathVariable int taskId){
+		return createTaskEntityModel(taskService.deleteTask(taskId));
 	}
 }

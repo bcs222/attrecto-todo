@@ -1,8 +1,11 @@
 error.task.description.blank=Missing description 
 error.task.description.size=Description size: min = 3, max = 20
 error.task.undefined.user=Missing user object
+error.task.deadline.null=Deadline must be provided
 
 error.user.name.blank=Missing user name
 error.user.name.size=User name size: min = 3, max = 20
+
+error.user.name.email.invalid=Invalid e-mail pattern
 
   

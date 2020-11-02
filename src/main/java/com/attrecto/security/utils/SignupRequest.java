@@ -19,6 +19,7 @@ public class SignupRequest implements Serializable{
 		this.email = email;
 		this.roles = roles;
 	}
+	
 	public String getUsername() {
 		return username;
 	}

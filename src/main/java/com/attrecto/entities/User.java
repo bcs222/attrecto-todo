@@ -37,7 +37,7 @@ public class User implements Serializable{
 	@Column(unique = true)
 	private String name;
 	
-	@Email(message = "Invalid e-mail address...")
+	@Email(message = "{error.user.name.email.invalid}")
 	private String email;
 	
 	@JsonIgnore
