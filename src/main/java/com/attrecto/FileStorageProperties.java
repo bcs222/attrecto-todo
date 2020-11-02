@@ -1,12 +1,14 @@
 package com.attrecto;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "file")
 public class FileStorageProperties {
-    private String uploadDir = "/download/userfiles/";
+	@Value("${attrecto.user.files.dir}")
+    private String uploadDir;
 
     public String getUploadDir() {
         return uploadDir;
